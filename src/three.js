@@ -19,41 +19,42 @@ const cube = new THREE.Mesh(boxGeometry, boxMaterial);
 scene.add(cube);
 
 // Line
-const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
-const points = [
-  new THREE.Vector3(-10, 0, 0),
-  new THREE.Vector3(0, 10, 0),
-  new THREE.Vector3(10, 0, 0),
-];
+// const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+// const points = [
+//   new THREE.Vector3(-10, 0, 0),
+//   new THREE.Vector3(0, 10, 0),
+//   new THREE.Vector3(10, 0, 0),
+// ];
 
-const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-const line = new THREE.Line(lineGeometry, lineMaterial);
-scene.add(line);
+// const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+// const line = new THREE.Line(lineGeometry, lineMaterial);
+// scene.add(line);
 
 // Camera Position
 camera.position.z = 20;
 
-// Load font and create text
-const fontLoader = new FontLoader();
-fontLoader.load(
-  'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
-  function (font) {
-    const textGeometry = new TextGeometry('Hello, Three.js!', {
-      font: font,
-      size: 1,
-      height: 0.2,
-      curveSegments: 12,
-      bevelEnabled: true,
-      bevelThickness: 0.02,
-      bevelSize: 0.05,
-      bevelOffset: 0,
-      bevelSegments: 5,
+// Texture loader
+const textureLoader = new THREE.TextureLoader();
+textureLoader.load(
+  '/floor.Jpg', // Ensure this path is correct
+  (texture) => {
+    // Create the floor
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false; // Disable mipmaps if the texture is not a power of two
+    const planeGeometry = new THREE.PlaneGeometry(50, 50);
+    const planeMaterial = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
     });
-
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-    textMesh.position.set(-5, 5, 0);
-    scene.add(textMesh);
+    const floorPlain = new THREE.Mesh(planeGeometry, planeMaterial);
+    floorPlain.rotation.x = -Math.PI / 2; // to rotate the floor 90deg
+    floorPlain.position.y = -Math.PI; // to rotate Y axios 180deg.
+    scene.add(floorPlain);
+  },
+  undefined,
+  (err) => {
+    console.error('An error occurred loading the texture:', err);
   }
 );
 
@@ -61,8 +62,6 @@ fontLoader.load(
 function animate() {
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
-  line.rotation.x += 0.01;
-  line.rotation.y += 0.01;
 
   renderer.render(scene, camera);
 }
