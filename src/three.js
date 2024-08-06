@@ -1,6 +1,4 @@
 import * as THREE from 'three';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
 // Create new scene
 const scene = new THREE.Scene();
@@ -57,6 +55,42 @@ textureLoader.load(
     console.error('An error occurred loading the texture:', err);
   }
 );
+
+// create walls
+const wallGroup = new THREE.Group();
+scene.add(wallGroup);
+// Front wall
+const frontWall = new THREE.Mesh(
+  new THREE.BoxGeometry(50, 20, 0.01),
+  new THREE.MeshBasicMaterial({ color: '#F0E2E2' })
+);
+frontWall.position.z = -20;
+
+// Left wall
+const leftWall = new THREE.Mesh(
+  new THREE.BoxGeometry(50, 20, 0.01),
+  new THREE.MeshBasicMaterial({ color: 'pink' })
+);
+
+leftWall.rotation.y = Math.PI / 2; // rotate 90deg
+leftWall.position.x = -20;
+
+const rightWall = new THREE.Mesh(
+  new THREE.BoxGeometry(50, 20, 0.01),
+  new THREE.MeshBasicMaterial({ color: 'pink' })
+);
+rightWall.rotation.y = Math.PI / 2; // rotate 90deg
+rightWall.position.x = 20;
+
+wallGroup.add(frontWall, leftWall, rightWall);
+
+// Create the ceiling
+const ceilingGeometry = new THREE.PlaneGeometry(50, 50);
+const ceilingMaterial = new THREE.MeshBasicMaterial({ color: '#F7EEED' });
+const ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+ceiling.rotation.x = Math.PI / 2;
+ceiling.position.y = 10;
+scene.add(ceiling);
 
 // Animation loop
 function animate() {
